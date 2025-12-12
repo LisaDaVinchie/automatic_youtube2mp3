@@ -18,7 +18,6 @@ class Downloader:
         self.url = url
         output_path = self._create_output_path()
         ydl_opts = self._download_options(output_path)
-        print(f"Output Path is: {output_path}")
         with YoutubeDL(ydl_opts) as ydl:
             ydl.download([self.url])
 
