@@ -19,7 +19,13 @@ class Downloader:
         output_path = self._create_output_path()
         ydl_opts = self._download_options(output_path)
         with YoutubeDL(ydl_opts) as ydl:
-            ydl.download([self.url])
+            print("Starting download...")
+            try:
+                ydl.download([self.url])
+                print("Download completed.\n")
+            except Exception as e:
+                print("An error occurred during download:", str(e))
+                return
 
     def _remove_playlist_component(self):
         if "watch" in self.url and "&list=" in self.url:
@@ -27,18 +33,19 @@ class Downloader:
 
     def _create_output_path(self) -> str:
         file_template = ""
+        if "watch" in self.url and "&list=" in self.url:
+                self._remove_playlist_component()
+                
         if "playlist?list=" in self.url:
             file_template = "%(playlist)s/%(track_number)s - %(title)s.%(ext)s"
             
+            # file_template = "%(title)s.%(ext)s"
         else:
-            if "watch" in self.url and "&list=" in self.url:
-                self._remove_playlist_component()
-            
             file_template = "%(title)s.%(ext)s"
             
         return str(self.output_dir / file_template)
 
-    def _download_options(self, output_path_template: Path = None, preferred_quality: int = 192, preferred_format: str = "mp3") -> dict:
+    def _download_options(self, output_path_template: str = None, preferred_quality: int = 192, preferred_format: str = "mp3") -> dict:
         ydl_opts = {
             "format": "bestaudio/best",
             "postprocessors": [{
