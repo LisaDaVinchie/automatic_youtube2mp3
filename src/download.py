@@ -1,7 +1,6 @@
 from yt_dlp import YoutubeDL
+from pathlib import Path
 import sys
-
-output_dir = "./output/"
 
 
 # Sample URLs:
@@ -10,24 +9,52 @@ output_dir = "./output/"
 # Single Song in Playlist:
 # https://music.youtube.com/watch?v=uZwFVZgAuFk&list=OLAK5uy_mBj-sSPwi2H0fOlNpXgre7v-r73lUd6Zs
 
-song_url = sys.argv[1] if len(sys.argv) > 1 else input("Enter URL: ")
+class Downloader:
+    def __init__(self, output_dir: Path):
+        self.output_dir = output_dir
+        self.url = ""
 
-if "playlist?list=" in song_url:
-    output_path = f"{output_dir}%(playlist)s/%(track_number)s - %(title)s.%(ext)s"
-elif "watch" in song_url and "&list=" in song_url:
-    # Remove playlist component from a watch URL
-    song_url = song_url.split("&list=")[0]
-    output_path = f"{output_dir}%(title)s.%(ext)s"
+    def run(self, url: str):
+        self.url = url
+        output_path = self._create_output_path()
+        ydl_opts = self._download_options(output_path)
+        print(f"Output Path is: {output_path}")
+        with YoutubeDL(ydl_opts) as ydl:
+            ydl.download([self.url])
 
-ydl_opts = {
-    "format": "bestaudio/best",
-    "postprocessors": [{
-        "key": "FFmpegExtractAudio",
-        "preferredcodec": "mp3",
-        "preferredquality": "192",
-    }],
-    "outtmpl": output_path
-}
+    def _remove_playlist_component(self):
+        if "watch" in self.url and "&list=" in self.url:
+            self.url = self.url.split("&list=")[0]
 
-with YoutubeDL(ydl_opts) as ydl:
-    ydl.download([song_url])
+    def _create_output_path(self) -> str:
+        file_template = ""
+        if "playlist?list=" in self.url:
+            file_template = "%(playlist)s/%(track_number)s - %(title)s.%(ext)s"
+            
+        else:
+            if "watch" in self.url and "&list=" in self.url:
+                self._remove_playlist_component()
+            
+            file_template = "%(title)s.%(ext)s"
+            
+        return str(self.output_dir / file_template)
+
+    def _download_options(self, output_path_template: Path = None, preferred_quality: int = 192, preferred_format: str = "mp3") -> dict:
+        ydl_opts = {
+            "format": "bestaudio/best",
+            "postprocessors": [{
+                "key": "FFmpegExtractAudio",
+                "preferredcodec": preferred_format,
+                "preferredquality": str(preferred_quality),
+            }],
+            "outtmpl": output_path_template
+        }
+        
+        return ydl_opts
+
+# if __name__ == "__main__":
+#     downloader = Downloader(output_dir=Path("./output/"))
+#     url = sys.argv[1] if len(sys.argv) > 1 else input("Enter URL: ")
+    
+#     # url = "https://music.youtube.com/watch?v=uZwFVZgAuFk&list=OLAK5uy_mBj-sSPwi2H0fOlNpXgre7v-r73lUd6Zs"
+#     downloader.run(url)
