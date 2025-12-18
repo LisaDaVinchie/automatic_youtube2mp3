@@ -1,6 +1,6 @@
 from yt_dlp import YoutubeDL
 from pathlib import Path
-# import sys
+import threading
 
 
 # Sample URLs:
@@ -14,7 +14,21 @@ class Downloader:
         self.output_dir = output_dir
         self.url = ""
 
-    def download(self, url: str):
+    def download_start(self, url: str):
+        self.stop_download = False
+        
+        self.thread = threading.Thread(
+            target=self._run,
+            args=(url,),
+            daemon=True
+            )
+        
+        self.thread.start()
+        
+    def download_stop(self):
+        self.stop_download = True
+
+    def _run(self, url):
         self.url = url
         output_path = self._create_output_path()
         ydl_opts = self._download_options(output_path)
