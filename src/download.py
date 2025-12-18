@@ -26,6 +26,7 @@ class Downloader:
         ydl_opts = {
             "quiet": True,
             "no_warnings": True,
+            "logger": SilentLogger()
         }
 
         try:
@@ -67,3 +68,8 @@ class Downloader:
         }
         
         return ydl_opts
+    
+class SilentLogger:
+    def debug(self, msg): pass
+    def warning(self, msg): pass
+    def error(self, msg): pass
