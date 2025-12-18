@@ -1,7 +1,6 @@
 from yt_dlp import YoutubeDL
 from pathlib import Path
 import threading
-# import time
 
 
 # Sample URLs:
