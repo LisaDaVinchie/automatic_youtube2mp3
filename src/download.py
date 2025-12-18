@@ -1,6 +1,7 @@
 from yt_dlp import YoutubeDL
 from pathlib import Path
 import threading
+# import time
 
 
 # Sample URLs:
@@ -13,6 +14,9 @@ class Downloader:
     def __init__(self, output_dir: Path):
         self.output_dir = output_dir
         self.url = ""
+        
+        self.stop_download = False
+        self.thread = None
 
     def download_start(self, url: str):
         self.stop_download = False
@@ -27,6 +31,10 @@ class Downloader:
         
     def download_stop(self):
         self.stop_download = True
+        
+    def _progress_hook(self, d):
+        if self.stop_download:
+            raise KeyboardInterrupt()
 
     def _run(self, url):
         self.url = url
@@ -78,7 +86,8 @@ class Downloader:
             }],
             "outtmpl": output_path_template,
             "quiet": True,
-            "no_warnings": True
+            "no_warnings": True,
+            "progress_hooks": [self._progress_hook],
         }
         
         return ydl_opts
