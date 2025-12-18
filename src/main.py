@@ -11,9 +11,9 @@ from download import Downloader
 class YT_downloader_app(App):
         
     def build(self):
-        output_dir = Path("./output/")
-        output_dir.mkdir(parents=True, exist_ok=True)
-        self.downloader = Downloader(output_dir=output_dir)
+        self.output_dir = Path("./output/")
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.downloader = Downloader(output_dir=self.output_dir)
         layout = BoxLayout(orientation='vertical')
         # create a label
         self.label = Label(text='YouTube to MP3 Downloader', font_size='24sp')
@@ -40,6 +40,7 @@ class YT_downloader_app(App):
         
         self.label.text = "Downloading..."
         self.downloader.download(self.url)
+        self.label.text = f"Download complete, file saved to {self.output_dir}"
 
 if __name__ == '__main__':
     app = YT_downloader_app()
