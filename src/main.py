@@ -39,7 +39,7 @@ class YT_downloader_app(App):
             return
         
         self.label.text = "Downloading..."
-        self.downloader.run(self.url)
+        self.downloader.download(self.url)
 
 if __name__ == '__main__':
     app = YT_downloader_app()

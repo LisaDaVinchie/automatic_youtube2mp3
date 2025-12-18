@@ -46,7 +46,7 @@ class TestDownloader(unittest.TestCase):
         # This test will only check if the run method executes without error.
         # Actual downloading is not performed in unit tests.
         try:
-            self.downloader.run(self.song_url)
+            self.downloader.download(self.song_url)
         except Exception as e:
             self.fail(f"Downloader.run() raised an exception unexpectedly: {e}")
             

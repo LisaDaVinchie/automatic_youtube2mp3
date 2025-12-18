@@ -14,13 +14,27 @@ class Downloader:
         self.output_dir = output_dir
         self.url = ""
 
-    def run(self, url: str):
+    def download(self, url: str):
         self.url = url
         output_path = self._create_output_path()
         ydl_opts = self._download_options(output_path)
         
         with YoutubeDL(ydl_opts) as ydl:
             ydl.download([self.url])
+            
+    def is_valid_url(self, url: str) -> bool:
+        ydl_opts = {
+            "quiet": True,
+            "no_warnings": True,
+        }
+
+        try:
+            with YoutubeDL(ydl_opts) as ydl:
+                ydl.extract_info(url, download=False)
+            return True
+        except Exception:
+            return False
+
 
     def _create_output_path(self) -> str:
         file_template = ""
