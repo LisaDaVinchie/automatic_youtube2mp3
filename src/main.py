@@ -20,7 +20,7 @@ class YT_downloader_app(App):
         
         # Create the text input for URL
         self.text_input = TextInput(hint_text='Enter YouTube URL here', size_hint=(1, 0.2), focused=False, multiline=False)
-        # self.text_input.bind(on_text_validate=self.extract_url)
+        self.text_input.bind(on_text_validate=self.on_download_button_press)
         
         # Create the download button
         download_button = Button(text='Download', size_hint=(1, 0.2))
