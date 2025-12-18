@@ -38,6 +38,10 @@ class YT_downloader_app(App):
             self.label.text = "Please enter a URL first."
             return
         
+        if not self.downloader.is_valid_url(self.url):
+            self.label.text = "Invalid URL. Please enter a valid YouTube or YoutubeMusic URL."
+            return
+        
         self.label.text = "Downloading..."
         self.downloader.download(self.url)
         self.label.text = f"Download complete, file saved to {self.output_dir}"
