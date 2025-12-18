@@ -2,6 +2,7 @@ import unittest
 from src.download import Downloader
 from pathlib import Path
 import shutil
+import time
 
 class TestDownloader(unittest.TestCase):
     def setUp(self):
@@ -49,13 +50,23 @@ class TestDownloader(unittest.TestCase):
         self.assertTrue(self.downloader.is_valid_url(valid_url))
         self.assertFalse(self.downloader.is_valid_url(invalid_url))
         
-    def test_run_song(self):
+    def test_download_song(self):
         # This test will only check if the run method executes without error.
         # Actual downloading is not performed in unit tests.
         try:
-            self.downloader.download(self.song_url)
+            self.downloader.download_start(self.song_url)
         except Exception as e:
-            self.fail(f"Downloader.download() raised an exception unexpectedly: {e}")
+            self.fail(f"Downloader.download_start() raised an exception unexpectedly: {e}")
             
+        if self.output_dir.exists():
+            shutil.rmtree(self.output_dir)
+            
+    def test_stop_download(self):
+        # This test will check if the stop_download flag is set correctly.
+        self.downloader.download_start(self.song_url)
+        time.sleep(3)
+        self.downloader.download_stop()
+        self.assertTrue(self.downloader.stop_download)
+        
         if self.output_dir.exists():
             shutil.rmtree(self.output_dir)
