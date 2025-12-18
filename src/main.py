@@ -43,7 +43,7 @@ class YT_downloader_app(App):
             return
         
         self.label.text = "Downloading..."
-        self.downloader.download(self.url)
+        self.downloader.download_start(self.url)
         self.label.text = f"Download complete, file saved to {self.output_dir}"
 
 if __name__ == '__main__':
