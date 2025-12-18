@@ -52,6 +52,7 @@ class YT_downloader_app(App):
         
         self.label.text = "Downloading..."
         self.downloader.download_start(self.url)
+        Clock.schedule_once(self.reset_text_input, 1)
         Clock.schedule_once(self.reset_label, 3)
         
     def on_stop_button_press(self, instance):
@@ -61,6 +62,9 @@ class YT_downloader_app(App):
         
     def reset_label(self, dt):
         self.label.text = "YouTube to MP3 Downloader"
+        
+    def reset_text_input(self, dt):
+        self.text_input.text = ""
 
 if __name__ == '__main__':
     app = YT_downloader_app()
