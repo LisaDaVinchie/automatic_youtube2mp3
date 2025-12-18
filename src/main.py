@@ -24,7 +24,7 @@ class YT_downloader_app(App):
         
         # Create the download button
         download_button = Button(text='Download', size_hint=(1, 0.2))
-        download_button.bind(on_press=self.on_button_press)
+        download_button.bind(on_press=self.on_download_button_press)
         
         layout.add_widget(self.label)
         layout.add_widget(self.text_input)
@@ -32,15 +32,13 @@ class YT_downloader_app(App):
 
         return layout
     
-    def on_button_press(self, instance):
-        print("Button pressed!")
+    def on_download_button_press(self, instance):
         self.url = self.text_input.text
-        print("TextInput is:", self.url)
         if not self.url:
-            print("No URL entered.")
             self.label.text = "Please enter a URL first."
             return
         
+        self.label.text = "Downloading..."
         self.downloader.run(self.url)
 
 if __name__ == '__main__':
