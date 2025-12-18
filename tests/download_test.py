@@ -42,13 +42,20 @@ class TestDownloader(unittest.TestCase):
         expected_template = str(self.output_dir / "%(playlist)s/%(track_number)s - %(title)s.%(ext)s")
         self.assertEqual(output_path, expected_template)
         
+    def test_is_valid_url(self):
+        valid_url = "https://music.youtube.com/watch?v=uZwFVZgAuFk"
+        invalid_url = "https://invalid.url/test"
+        
+        self.assertTrue(self.downloader.is_valid_url(valid_url))
+        self.assertFalse(self.downloader.is_valid_url(invalid_url))
+        
     def test_run_song(self):
         # This test will only check if the run method executes without error.
         # Actual downloading is not performed in unit tests.
         try:
             self.downloader.download(self.song_url)
         except Exception as e:
-            self.fail(f"Downloader.run() raised an exception unexpectedly: {e}")
+            self.fail(f"Downloader.download() raised an exception unexpectedly: {e}")
             
         if self.output_dir.exists():
             shutil.rmtree(self.output_dir)
