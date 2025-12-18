@@ -3,10 +3,11 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
+from kivy.clock import Clock
 
 from pathlib import Path
-
 from download import Downloader
+import time
 
 class YT_downloader_app(App):
         
@@ -15,8 +16,10 @@ class YT_downloader_app(App):
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.downloader = Downloader(output_dir=self.output_dir)
         layout = BoxLayout(orientation='vertical')
+        
         # create a label
-        self.label = Label(text='YouTube to MP3 Downloader', font_size='24sp')
+        self.label = Label(font_size='24sp')
+        self.reset_label(None)
         
         # Create the text input for URL
         self.text_input = TextInput(hint_text='Enter YouTube URL here', size_hint=(1, 0.2), focused=False, multiline=False)
@@ -26,9 +29,14 @@ class YT_downloader_app(App):
         download_button = Button(text='Download', size_hint=(1, 0.2))
         download_button.bind(on_press=self.on_download_button_press)
         
+        # Create the stop button
+        stop_button = Button(text='Stop', size_hint=(1, 0.2))
+        stop_button.bind(on_press=self.on_stop_button_press)
+        
         layout.add_widget(self.label)
         layout.add_widget(self.text_input)
         layout.add_widget(download_button)
+        layout.add_widget(stop_button)
 
         return layout
     
@@ -44,7 +52,15 @@ class YT_downloader_app(App):
         
         self.label.text = "Downloading..."
         self.downloader.download_start(self.url)
-        self.label.text = f"Download complete, file saved to {self.output_dir}"
+        Clock.schedule_once(self.reset_label, 3)
+        
+    def on_stop_button_press(self, instance):
+        self.downloader.download_stop()
+        self.label.text = "Download stopped."
+        Clock.schedule_once(self.reset_label, 3)
+        
+    def reset_label(self, dt):
+        self.label.text = "YouTube to MP3 Downloader"
 
 if __name__ == '__main__':
     app = YT_downloader_app()
