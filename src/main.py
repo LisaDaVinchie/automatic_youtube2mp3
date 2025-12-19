@@ -38,8 +38,7 @@ class YT_downloader_app(App):
         choose_folder_btn.bind(on_press=lambda _: self.open_folder_chooser())
         layout.add_widget(choose_folder_btn)
         
-        print(f"Output directory set to: {self.output_dir}")
-        self.downloader = Downloader(output_dir=self.output_dir)
+        self.downloader = None
 
         
         layout.add_widget(self.label)
@@ -81,6 +80,8 @@ class YT_downloader_app(App):
             self.output_dir.mkdir(parents=True, exist_ok=True)
             self.label.text = f"Destination: {self.output_dir}"
         popup.dismiss()
+        
+        self.downloader = Downloader(self.output_dir)
 
         
     def open_folder_chooser(self):
