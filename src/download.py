@@ -10,16 +10,17 @@ import threading
 # https://music.youtube.com/watch?v=uZwFVZgAuFk&list=OLAK5uy_mBj-sSPwi2H0fOlNpXgre7v-r73lUd6Zs
 
 class Downloader:
-    def __init__(self, output_dir: Path):
-        self.output_dir = output_dir
+    def __init__(self):
+        self.output_dir = Path("./")
         self.url = ""
         
         self.stop_download = False
         self.thread = None
 
-    def download_start(self, url: str):
+    def download_start(self, url: str, output_dir: Path = Path("./")):
         self.stop_download = False
-        
+        self.output_dir = output_dir
+
         self.thread = threading.Thread(
             target=self._run,
             args=(url,),
